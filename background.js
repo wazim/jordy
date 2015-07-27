@@ -3,7 +3,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 });
 
 function getItems() {
-  $.getJSON("http://project-jordan.herokuapp.com/jordan/api/all?format=json", function(result){
+  $.getJSON("http://project-jordan.herokuapp.com/jordan/api?format=json", function(result){
         var currentItems = new Array();
         var items = localStorage.getItem("items");
         if(items === null) {
