@@ -3,26 +3,29 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 });
 
 function getItems() {
-  $.getJSON("http://project-jordan.herokuapp.com/jordan/api?format=json", function(result){
+  console.log("Checking Jordan...");
+  $.get("http://project-jordan.herokuapp.com/jordan/api?format=json", function(result){
         var currentItems = new Array();
-        var items = localStorage.getItem("items");
+
+        var items = localStorage.getItem("films");
         if(items === null) {
           items = new Array();
+        } else {
+          var myItems = jQuery.parseJSON(items);
+          $.each(myItems, function(i, field){
+            currentItems.push(field.name);
+          });
         }
 
-        $.each(items, function(i, field){
-          var obj = jQuery.parseJSON( field );
-          currentItems.push(obj.name);
-        });
-
         var newItems = new Array();
+
         $.each(result, function(i, field){
-          var obj = jQuery.parseJSON( field );
-          newItems.push(obj.name);
+          var item = jQuery.parseJSON(field);
+          newItems.push(item.name);
         });
 
         if(currentItems.length === 0){
-          localStorage.setItem("items", result);
+          localStorage.setItem("films", "["+result+"]");
         }
         else if(newItems.length > currentItems.length) {
           var newlyListedItems;
@@ -36,14 +39,16 @@ function getItems() {
               iconUrl: "icon.png"
             }
 
-            chrome.notifications.create("Added"+count, opt, function(data) {
-              console.log(data);
-            });
+            chrome.notifications.create("Added"+count, opt, function(data) {});
             count++;
           });
-          localStorage.setItem("items", result);
+          localStorage.setItem("films", "["+result+"]");
         }
+        else {
+          console.log("Nothing new");
+        }
+        console.log("Done!");
   });
 }
 
-setInterval(getItems(), 60000);
+setInterval(function() {getItems()}, 60000);
