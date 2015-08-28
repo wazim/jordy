@@ -1,2 +1,2 @@
 # jordy
-Chrome extension for Project Jordan
+Chrome extension for Project Jordan.
